@@ -17,7 +17,7 @@ title: Home
 author: "Stringc0"
 email: "Stringc0@outlook.es"
 description: Mi página web!
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/blog" # the subpath of your site, e.g. /blog
 url: "https://stringc0.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # ------------------------------------------------------------------------------
