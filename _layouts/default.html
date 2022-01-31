@@ -62,15 +62,18 @@
             {% if site.blog == true %}
               <div class="posts-list">
                 <a href="{{ '/blog' | prepend: site.baseurl }}">
-                  <h4>Recent Posts:</h4>
+                  <h4>Posts Recientes:</h4>
                 </a>
                 <ul>
-                  {% for i in (1..site.recent_posts) %}
-                     {% assign post = site.posts[i] %}
+                  {% for i in site.posts %}
+			{% capture length %} {{ forloop.length }} {% endcapture %}
+		  {% endfor %}
+				{% assign limit = length | minus: 1 %}
+				{% for j in (0..limit) %}
                   <li>
-                    <a href="{{ post.url | prepend: site.baseurl  }}">{{ post.title }}</a>
+				    <a href="{{ site.posts[j].url }}">{{ site.posts[j].title }} </a>
                   </li>
-                  {% endfor %}
+				{% endfor %}
                 </ul>
               </div>
             {% endif %}
