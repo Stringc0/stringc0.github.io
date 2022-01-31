@@ -17,7 +17,7 @@ title: Home
 author: "Stringc0"
 email: "Stringc0@outlook.es"
 description: Mi página web!
-baseurl: "" # the subpath of your site, e.g. /blog
+#baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://stringc0.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # ------------------------------------------------------------------------------
@@ -31,8 +31,8 @@ github_username: "stringc0"
 
 # Theme
 theme: jekyll-theme-potato-hacker                 # Uncomment this
-#remote_theme: luxedo/jekyll-theme-potato-hacker   # Or this
-theme_repository: "https://github.com/luxedo/jekyll-theme-potato-hacker"
+remote_theme: luxedo/jekyll-theme-potato-hacker   # Or this
+#theme_repository: "https://github.com/luxedo/jekyll-theme-potato-hacker"
 theme_base: "dark"       # Theme palette (light | dark)
 theme_switch: on         # Show color switch (on | off)
 
@@ -68,5 +68,3 @@ kramdown:
 exclude:
   - Gemfile
   - Gemfile.lock
-
-# Testing
