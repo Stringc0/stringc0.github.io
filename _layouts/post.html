@@ -2,7 +2,15 @@
 layout: default
 blog: true
 ---
-<h4 class="post-title"> {{ page.date }} </h4>
+<h5 class="post-title"> Publicado el {{ page.fecha }}.</h5>
 <article class="blog-post">
   {{ content }}
 </article>
+
+<br>
+{% if page.applause_button %}
+  <applause-button class="mb6">
+    color={{ site.accent_color | default:'rgb(79,177,186)' }}
+    url={{ site.url }}{{ page.url }} >
+  </applause-button>
+{% endif %}

@@ -1,7 +1,9 @@
 ---
 layout: post
-title:  "Segundo Post"
-date:   2022-01-31 07:47:00 -0200
+title:  "Primer Post"
+date:   2022-01-30 19:59:00 -0200
+fecha:	01/30/2022
+hora:	'19:59'
 categories: blog
 layout: post
 ---

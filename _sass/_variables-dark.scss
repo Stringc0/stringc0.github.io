@@ -9,18 +9,52 @@
 
 $gray-base:              #000;
 $gray-darker:            lighten($gray-base, 13.5%); // #222
-$gray-darker-hover: 	   darken($gray-darker, 5%);
+$gray-darker-hover:	 darken($gray-darker, 5%);
 $gray-dark:              lighten($gray-base, 20%);   // #333
 $gray:                   lighten($gray-base, 33.5%); // #555
 $gray-light:             lighten($gray-base, 46.7%); // #777
 $gray-lighter:           lighten($gray-base, 82.5%);
 $gray-white:             lighten($gray-base, 100%); // #fff
 
-$brand-primary:         #1F7F1F;
+
+//$brand-primary:         #7ddf7d;
 $brand-success:         #3F7F3F;
 $brand-info:            #3F7F7F;
 $brand-warning:         #7F6F3F;
-$brand-danger:          #7F3F3F;
+$brand-danger:		#D9534F;
+//$brand-danger:          #7F3F3F;
+
+
+
+//------------------------------------ CUSTOM COLORS -----------------------------------------------------------------------------------
+
+
+$brand-primary:			#68d612;
+$custom1:			#ff1919;
+$gris-oscuro:			#333333;
+$verde-claro:			#09E500;
+$ej:				#00b200;
+$titles:			#da5c51;
+$background:			#0a0a0a;
+
+$pre-back:			#1e2021;
+$griss:				#555555;
+$bordo:				#A50000;
+
+//------------------------------------ END CUSTOM -----------------------------------------------------------------------------------
+
+
+
+//------------------------------------ CUSTOM -----------------------------------------------------------------------------------
+$hr-border:                   $gris-oscuro;
+//$hr-border:                   $gray-lighter;
+
+//------------------------------------END CUSTOM -----------------------------------------------------------------------------------
+
+// ANOTACIONES
+//Si el color es demasiado oscuro, no lo toma
+
+
 
 // Icons colors
 $github-color:          #666;
@@ -841,8 +875,11 @@ $kbd-bg:                      #333;
 
 $pre-bg:                      #f5f5f5;      // Useless, Overwritten in _base.scss
 $pre-color:                   $gray-dark;   // Useless, Overwritten in _base.scss
-$pre-border-color:            #ccc;
+$pre-border-color:            #766e61;
 $pre-scrollable-max-height:   340px;
+
+
+
 
 
 //== Type
@@ -851,21 +888,31 @@ $pre-scrollable-max-height:   340px;
 
 //** Horizontal offset for forms and lists.
 $component-offset-horizontal: 180px;
+
 //** Text muted color
 $text-muted:                  $gray-light;
+
 //** Abbreviations and acronyms border color
 $abbr-border-color:           $gray-light;
+
 //** Headings small color
 $headings-small-color:        $gray-light;
+
 //** Blockquote small color
 $blockquote-small-color:      $gray-light;
+
 //** Blockquote font size
 $blockquote-font-size:        ($font-size-base * 1.25);
+
 //** Blockquote border color
 $blockquote-border-color:     $gray-lighter;
+
 //** Page header border color
 $page-header-border-color:    $gray-lighter;
+
 //** Width of horizontal description list titles
 $dl-horizontal-offset:        $component-offset-horizontal;
+
 //** Horizontal line color.
-$hr-border:                   $gray-lighter;
+//$hr-border:                   $gray-lighter;
+

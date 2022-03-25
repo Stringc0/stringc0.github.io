@@ -1,8 +1,64 @@
 // Custom SCSS
 // General
 
+// CUSTOM----------------
+
+.bordo {
+  color:$bordo;
+}
+
+//.bordo {
+//  color: rgb(200, 0, 0);
+//}
+
+pre{
+  background:$pre-back;
+}
+
+.ej, .ej:hover {
+  color:$ej;
+}
+
+.gris {
+  color:$griss;
+}
+
+// applause-button
+applause-button {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+
+.count-container {
+  color: inherit;
+  }
+}
+
+//TOC
+#toc_container {
+    background: #1e1e1e none repeat scroll 0 0;
+    border: 1px solid #aaa;
+    display: table;
+    font-size: 95%;
+    margin-bottom: 1em;
+    padding: 20px;
+    width: auto;
+}
+
+.toc_title {
+    font-weight: 700;
+    text-align: center;
+}
+
+#toc_container li, #toc_container ul, #toc_container ul li{
+     list-style: outside none none !important;
+}
+
+
+// ENDCUSTOM-------------
+
 body {
-  background: linear-gradient($body-bg-header 10%, $body-bg 100%);
+  background: linear-gradient($background 10%, $background 100%);
   background-repeat: no-repeat;
   background-attachment: fixed;
   height: 100%;
@@ -31,16 +87,15 @@ h1 a:hover {
   color: $brand-primary;
 }
 
-
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  color: $brand-danger;
-  text-decoration-color: $brand-danger;
-  border-bottom-color: $brand-danger;
+  color: $titles;
+  text-decoration-color: $titles;
+  border-bottom-color: $titles;
 }
 
 #background-div,

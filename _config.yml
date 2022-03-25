@@ -34,7 +34,7 @@ github_username: "stringc0"
 remote_theme: luxedo/jekyll-theme-potato-hacker   # Or this
 #theme_repository: "https://github.com/luxedo/jekyll-theme-potato-hacker"
 theme_base: "dark"       # Theme palette (light | dark)
-theme_switch: on         # Show color switch (on | off)
+theme_switch: off         # Show color switch (on | off)
 
 # Extra settings
 blog: on                 # Show blog tag and post list (on | off)
@@ -68,3 +68,11 @@ kramdown:
 exclude:
   - Gemfile
   - Gemfile.lock
+
+defaults:
+  # You can use the following to enable comments on all posts.
+  - scope:
+      type:            posts
+    values:
+      # https://applause-button.com/
+      applause_button:       true

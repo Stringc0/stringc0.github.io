@@ -4,10 +4,11 @@
       <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
-            <a class="navbar-toggle collapsed navbar-icon" data-toggle="collapse"
-              data-target="#bs-example-navbar-collapse-1">
-              <i class="fa fa-bars fa-2x"></i>
+	    <!--	LA BARRITA	 -->
+            <a class="navbar-toggle collapsed navbar-icon" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+              <i class="fa fa-bars fa-2x">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</i>
             </a>
+	    <!--	LA BARRITA	 -->
             <a class="navbar-brand navbar-icon" href="{{ site.baseurl | append: '/'}}">
                 <i class="fa fa-home fa-2x"></i>
             </a>
@@ -22,8 +23,8 @@
 
               {% for page in site.dropdown %}
                 <li class="dropdown dropdown-{{ page.dropdown }}">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                    role="button" aria-haspopup="true" aria-expanded="false">{{ page.dropdown }}
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+		     {{ page.dropdown }}
                     <span class="caret"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-{{ page.title }}">

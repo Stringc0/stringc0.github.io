@@ -4,11 +4,11 @@ layout: page
 {% for post in site.posts %}
     <a href="{{ post.url | prepend: site.baseurl }}">
       <h1 class="post-title"> {{ post.title }}</h1>
-      <h5 class="post-title"> {{ post.date }} </h5>
+      <h5 class="post-title"> Publicado el {{ post.fecha }}. </h5>
     </a>
     {{post.excerpt}}
     {% if post.content contains site.excerpt_separator %}
-      <b><a href="{{ post.url | prepend: site.baseurl }}">Continuar leyendo...&gt;</a></b>
+      <b><a href="{{ post.url | prepend: site.baseurl }}">Continuar leyendo... 📖</a></b>
     {% endif %}
     <br/>
     <div style="margin-bottom: 5em;"></div>
