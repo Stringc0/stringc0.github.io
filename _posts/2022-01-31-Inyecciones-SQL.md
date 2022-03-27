@@ -40,16 +40,21 @@ Este artículo demostrará ejemplos del DBMS MySQL.
 
 ---
 <h2>Antes de empezar </h2>
-Voy a tratar de explicar todo de forma que cualquier persona (con mínimos conocimientos del tema) pueda entenderlo.
+Voy a tratar de explicar todo de forma que cualquier persona, con mínimos conocimientos del tema, pueda entenderlo.
 
 ¿Por qué? Porque de esta forma puedo asegurar tanto el entendimiento de quien sea que esté interesado en este tópico, como el mío.
 
-Obviamente no voy a explicar todo a bajo nivel, pero por lo menos quiero que se entienda el por qué de las cosas.
+Mi recomendación para aprender bien este ataque es ir probando las distintas técnicas y comandos en una consola de MySQL.
 
 <h2 id="Basics">Cosas Básicas</h2>
 Un par de preguntas y respuestas rápidas para "entrar en contacto" con la vulnerabilidad.
 
+<br>
+
 <h3 id="Qué">¿Qué es?</h3>
+
+---
+
 La vulnerabilidad Inyección SQL es una de tipo, como su nombre lo dice, de inyección de código.
 
 <br>
@@ -67,7 +72,7 @@ Se lleva a cabo ingresando código de la base de datos en algun input con el obj
 ---
 
 Se da, por lo general, en las aplicaciones web.
-Especificamente, se da en aquellas funciones de la aplicación que acepten el input del usuario.
+Específicamente, se da en aquellas funciones de la aplicación que acepten el input del usuario.
 
 <br>
 
