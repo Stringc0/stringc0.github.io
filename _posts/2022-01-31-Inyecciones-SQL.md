@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Inyecciones SQL"
-date: 2022-01-31 16:30 -0200
+date: 2022-03-25 16:30 -0200
 fecha: 25/03/2022
 hora: '16:30'
 categories: blog
