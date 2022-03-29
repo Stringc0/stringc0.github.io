@@ -39,12 +39,15 @@ Este artículo demostrará ejemplos del DBMS MySQL.
 <br>
 
 ---
+
 <h2>Antes de empezar </h2>
 Voy a tratar de explicar todo de forma que cualquier persona, con mínimos conocimientos del tema, pueda entenderlo.
 
 ¿Por qué? Porque de esta forma puedo asegurar tanto el entendimiento de quien sea que esté interesado en este tópico, como el mío.
 
 Mi recomendación para aprender bien este ataque es ir probando las distintas técnicas y comandos en una consola de MySQL.
+
+---
 
 <h2 id="Basics">Cosas Básicas</h2>
 Un par de preguntas y respuestas rápidas para "entrar en contacto" con la vulnerabilidad.
@@ -262,7 +265,7 @@ consulta que se encarga de que eso no suceda.
 
 Porque se están consultando aquellas obras de arte cuya id sea 1 **o** 1=1, lo cual es una sentencia que devuelve **True**. Por ende, la base 
 de datos devuelve las obras cuya id sea 1 o **True**. Esto significa que devolverá cualquier obra que tenga asignado algún valor en la columna 
-'id'. Incluso aquellas que tengan "NULL" debido a que también es un valor.
+'id', incluso aquellas que tengan "NULL" debido a que también es un valor.
 
 <br>
 <!--<h5>Procedimiento</h5>-->
@@ -345,7 +348,7 @@ Estos metadatos contienen la información de prácticamente todo; bases de datos
 * Los metadatos se guardan en una base de datos particular llamada "INFORMATION_SCHEMA".
 
 * Se utiliza una forma alternativa de seleccionar los datos de una tabla (o al menos para mí lo es).
-> <font class="highlight" size="2">SELECT (columna) FROM (database).(tabla)</font><br><font size="2">Te permite seleccionar el valor de la columna de una tabla de una base de datos, sin importar si estás o no utilizando esa base de datos. </font>
+> <font class="highlight" size="2">SELECT (columna) FROM (database).(tabla)</font><font size="2"><br>Te permite seleccionar el valor de la columna de una tabla de una base de datos, sin importar si estás o no utilizando esa base de datos. </font>
 
 Objetos utilizados:
 
@@ -736,17 +739,17 @@ Por defecto, esta función devuelve información en pantalla. No obstante, acept
 <pre class="highlight">SELECT if(1=1,'verdadero','falso');</pre>
 _"Si 1 es igual a 1 (true), mostrar 'verdadero' en pantalla. Caso contrario (false), mostrar 'falso' en pantalla."_
 
-<pre class="highlight">SELECT if(2>1,sleep(3),sleep(2));</pre>
-_"Si 2 es mayor a 1 (true), ejecutar un sleep de 3 segundos. Caso contrario (false), hacer un sleep de 2 segundos."_
+<pre class="highlight">SELECT if(2>1,sleep(3),null);</pre>
+_"Si 2 es mayor a 1 (true), ejecutar un sleep de 3 segundos. Caso contrario (false), no hacer nada."_
 
 **Ejemplo**<br>
-Determinar el nombre de la base de datos.
+Determinar el nombre de la base de datos actual.
 
-<pre><a class="ej">http://pagina.com/galeria.php?id=1 <font class="bordo">AND IF((substring((SELECT schema_name FROM information_schema.schemata LIMIT 0,1),1,1) > 'a', sleep(8), NULL);#</font></a></pre>
-_"En caso de que el primer caracter de la primera fila de la columna 'schema_name', de la tabla 'schemata', de la base de datos 'information_schema' sea mayor a 'a', entonces hacer un sleep de 10 segundos, caso contrario no hacer nada."_
+<pre><a class="ej">http://pagina.com/galeria.php?id=1 <font class="bordo">AND IF(substring(database(),1,1) > 'a', sleep(10), NULL);#</font></a></pre>
+_"En caso de que el primer caracter del nombre de la base de datos actual sea mayor a 'a', entonces hacer un sleep de 10 segundos. Caso contrario no hacer nada."_
 <br>
 
-El resto es técnicamente lo mismo, solo que van cambiando las columnas y tablas que se utilizan.
+El resto es técnicamente lo mismo, solo que se hace uso de los metadatos y subqueries.
 
 **Notas:**
 * No utilizar el intruder de burpsuite en esta técnica debería ser considerado delito federal.
@@ -763,8 +766,8 @@ Podría ser considerada una combinación entre inyección en banda e inferencial
 
 La información es visible, no en el mismo canal del ataque, en otro canal de comunicación.
 
-Básicamente, se envía información, desde la base de datos, a un tercero (el cual tiene la capacidad de recibirla). Este tercero puede ser un
-proxy o un servidor en escucha.
+Se envía información, desde la base de datos, a un tercero (el cual tiene la capacidad de recibirla). Puede ser un proxy o un servidor en 
+escucha.<br>
 * La herramienta Burp Collaborator de Burp Suite es ampliamente utilizada en este tipo de ataques. Está presente en la versión
 **PRO** de Burp.
 * Utilizar un Virtual Private Server (VPS) es una alternativa.
@@ -921,6 +924,15 @@ Intentando una inyección SQL:
 ![inyeccion](/assets/img/screens/inyeccion_2.png)
 
 No hubo éxito. El código es invulnerable a este ataque.
+
+<br>
+
+Código completo de los ejemplos anteriores (por si a alguien le interesa):
+
+* <a href="{{site.url}}/dropdown/conf.php" target="_blank">Archivo de configuración</a>
+* <a href="{{site.url}}/dropdown/tables.php" target="_blank">Código inseguro</a>
+* <a href="{{site.url}}/dropdown/secured_tables.php" target="_blank">Código seguro</a>
+
 
 <br>
 
