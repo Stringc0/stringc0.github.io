@@ -609,7 +609,7 @@ Notas:
 * ExtractValue() tiene un límite de 20 bytes que puede extraer, por lo que, si se quiere ver algo más grande que eso, se tiene que utilizar el método de la cláusula "SELECT".
 * Es recomendable utilizar el Intruder de la herramienta Burpsuite.
 
-<a href="https://www.rafaybaloch.com/2017/06/error-based-sql-injection-tricks-in.html">Este</a> y <a href="https://websec.ca/kb/sql_injection">este otro</a> artículo me ayudaron bastante a entender esta variación. Recomiendo su lectura ya que allí se muestran otras formas de ejecutar este tipo de ataque, incluyendo el método de la cláusula "SELECT".
+<a href="https://www.rafaybaloch.com/2017/06/error-based-sql-injection-tricks-in.html" target="_blank">Este</a> y <a href="https://websec.ca/kb/sql_injection" target="_blank">este otro</a> artículo me ayudaron bastante a entender esta variación. Recomiendo su lectura ya que allí se muestran otras formas de ejecutar este tipo de ataque, incluyendo el método de la cláusula "SELECT".
 
 <a href="#Basada en Error">Ejemplo práctico de la técnica</a>
 
@@ -620,7 +620,7 @@ Notas:
 <h4 id="Inferencial">Inyección SQL Inferencial (Inferential)</h4>
 Se caracteriza por el hecho de que no hay forma de ver el resultado del ataque.
 
-En este tipo de inyección, se recurre a los *condicionales* y al *tiempo de respuesta* para saber si las consultas son exitosas o no.
+En este tipo de inyección, se recurren a los *condicionales* y al *tiempo de respuesta* para saber si las consultas son exitosas o no.
 
 * La información ***no es visible*** y se la "extrae" caracter por caracter. Resulta un proceso bastante tardío.
 
@@ -929,9 +929,9 @@ No hubo éxito. El código es invulnerable a este ataque.
 
 Código completo de los ejemplos anteriores (por si a alguien le interesa):
 
-* <a href="{{site.url}}/dropdown/conf.php" target="_blank">Archivo de configuración</a>
-* <a href="{{site.url}}/dropdown/tables.php" target="_blank">Código inseguro</a>
-* <a href="{{site.url}}/dropdown/secured_tables.php" target="_blank">Código seguro</a>
+* <a href="{{site.url}}/dropdown/conf.php">Archivo de configuración</a>
+* <a href="{{site.url}}/dropdown/tables.php">Código inseguro</a>
+* <a href="{{site.url}}/dropdown/secured_tables.php">Código seguro</a>
 
 
 <br>
@@ -1086,6 +1086,9 @@ Payload:
 
 <br>
 Grep - Extract para tomar de la respuesta la información interesante:
+
+Se encuentra en:<br>
+Intruder -> Options -> Grep - Extract
 
 ![grep_extract](/assets/img/screens/grep.png)
 
@@ -1305,6 +1308,9 @@ Payload:
 <!--Explicación de cómo medir el tiempo de respuesta en el Intruder.-->
 
 Voy a usar un sleep de 8 en estos ejemplos.
+
+Para mostrar el tiempo de respuesta en Burp Suite, se lanza el ataque y luego, en el resultado:<br>
+Columns -> Response Completed (tildar)
 
 <br>
 Averiguando la cantidad de caracteres del nombre de la base de datos actual:
