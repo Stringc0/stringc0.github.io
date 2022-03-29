@@ -1085,7 +1085,7 @@ Payload:
 ![v_tablas](/assets/img/screens/tablas_2.png)
 
 <br>
-Grep - Extract para tomar de la respuesta la información interesante:
+Grep - Extract para tomar, de la respuesta, la información interesante:
 
 Se encuentra en:<br>
 Intruder -> Options -> Grep - Extract
