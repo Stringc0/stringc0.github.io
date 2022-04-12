@@ -7,10 +7,16 @@ hora: '16:30'
 categories: blog
 ---
 
-Las inyecciones SQL se dan exclusivamente en las bases de datos y, por lo general, desde las aplicaciones web.
+El Structured Query Language (SQL) es el lenguaje estándar de las bases de datos.<br>
+Estas bases de datos, o también conocidas como Database Management System (DBMS), proveen la disponibilidad de devolver, almacenar,
+modificar o destruir cualquier dato que se especifique. Esto se puede llevar a cabo desde la consola del DBMS, algo que sería 
+increíblemente tedioso, o desde las aplicaciones web, lo cual permite una rápida interacción entre los desarroladores y la base de datos.<br>
+Esto es ciertamente útil pero, ¿Qué pasaría si esta interacción se viera perturbada por un tercero?
 
-Pueden darse en cualquier Database Management System (DBMS).<br>
-Este artículo demostrará ejemplos del DBMS MySQL.
+Las inyecciones SQL se dan a través de este Structured Query Language, afectan a las bases de datos y, por lo general, se ejecutan desde 
+las aplicaciones web.
+
+Pueden darse en cualquier Database Management System (DBMS) pero en este artículo se demostrarán ejemplos de inyecciones SQL en MySQL.
 
 <!--more-->
 
@@ -66,7 +72,8 @@ La vulnerabilidad Inyección SQL es una de tipo, como su nombre lo dice, de inye
 
 ---
 
-Se lleva a cabo ingresando código de la base de datos en algun input con el objetivo de manipular el funcionamiento del backend.
+Se lleva a cabo ingresando comandos de la base de datos en algún campo que acepte información proporcionda por el usuario, que realice una 
+consulta a la base de datos, con el objetivo de manipular el funcionamiento del backend. Es decir, manipular la consulta.
 
 <br>
 
@@ -75,7 +82,7 @@ Se lleva a cabo ingresando código de la base de datos en algun input con el obj
 ---
 
 Se da, por lo general, en las aplicaciones web.
-Específicamente, se da en aquellas funciones de la aplicación que acepten el input del usuario.
+Específicamente, en aquellas funciones que acepten el input del usuario.
 
 <br>
 
@@ -84,9 +91,18 @@ Específicamente, se da en aquellas funciones de la aplicación que acepten el i
 ---
 
 Surge debido a una mala (o nula) sanitización del código del archivo que recibe el valor del input del usuario y que, al mismo tiempo, envía 
-una consulta a la base de datos, lo que permite que este usuario pueda manipular dicha consulta, haciéndolo capaz de visualizar, modificar o 
-eliminar cualquier valor. Ej: Ver bases de datos, tablas, usuarios, contraseñas, tarjetas de crédito y un largo, largo etcétera.
-Incluso podría ejecutar comandos del sistema o visualizar archivos del mismo, si las condiciones les son favorables.
+una consulta a la base de datos.
+
+<br>
+
+<h3 id="Impacto">¿Cuál es el impacto?</h3>
+
+---
+
+Si un usuario puede manipular una consulta, obtiene la capacidad de visualizar, modificar o destruir cualquier valor. <br>
+Ejemplo: Extraer, editar o eliminar información de las bases de datos como usuarios, contraseñas, tarjetas de crédito y un largo, largo etcétera.<br>
+Incluso podría ejecutar comandos del sistema o visualizar archivos del mismo, si las condiciones les son favorables, lo cual llevaría a que un
+atacante pueda comprometer, no solo la base de datos, el sistema entero.
 
 ---
 
@@ -106,6 +122,8 @@ El procedimiento suele ser el siguiente:
 
 ---
 
+<h3>Estableciendo Ejemplos</h3>
+
 Ejemplos que usaré de aquí en adelante.
 
 Base de datos: "epic_database"
@@ -115,7 +133,7 @@ Tabla: "galeria"
 URL:
 <pre><a class="ej">http://pagina.com/galeria.php?id=1</a></pre>
 
-Supongamos que la página está haciendo la siguiente consulta a la base de datos:
+Consulta a la base de datos:
 ```
  SELECT * FROM galeria WHERE id = 1;
 ```
@@ -126,14 +144,14 @@ Supongamos que la página está haciendo la siguiente consulta a la base de dato
 <br>
 <h4>1. Analizar en dónde se están realizando las consultas a la base de datos </h4>
 
-Se trata de ver en qué parte de la página web se podrían estar realizando dichas consultas.
+Se trata de ver en qué parte de la página web se podrían estar realizando.
 
 **Ejemplos:**
 * Paneles de logueo
 * Paneles de registro
 * Paneles de búsquedas.
 
-**Darle un vistazo a8 la URL siempre es algo informativo.**
+**Darle un vistazo a la URL siempre es algo informativo.**
 
 <br>
 
@@ -148,12 +166,13 @@ Se lo suele hacer a través de comillas, operaciones lógicas/aritméticas y/o c
 <br>
 
 <h5>Comillas</h5>
-No importa si la query está solicitando una cadena o un entero. Las comillas suelen rompen la sintaxis, en caso de que el código no esté sanitizado.
+No importa si la query está solicitando una cadena o un entero. Las comillas suelen rompen la sintaxis, en caso de que el código no esté 
+sanitizado.
 
 * Generar un error de sintaxis.
 * Escapar del contexto.<br>
-Si una consulta espera que el valor del input del usuario sea una cadena, que esté entre comillas, se las utiliza para cerrarlas y lograr que 
-el código inyectado se interprete como un comando.
+Si una consulta espera que el valor del input del usuario sea una cadena, que esté entre comillas, se las utiliza (a las comillas) para 
+"cerrarlas" y lograr que se efectúe la inyección.
 
 **Ejemplos**
 
@@ -1513,3 +1532,91 @@ Payload:
 <br>
 
 Creo que era más fácil usar SQLmap.
+
+---
+
+<h2>Referencias</h2>
+
+Basics<br>
+<a href="https://www.acunetix.com/vulnerabilities/web/tag/sql-injection/" target="_blank">https://www.acunetix.com/vulnerabilities/web/tag/sql-injection/</a><br>
+<a href="https://github.com/payloadbox/sql-injection-payload-list" target="_blank">https://github.com/payloadbox/sql-injection-payload-list</a><br>
+
+Error Based<br>
+<a href="https://www.rafaybaloch.com/2017/06/error-based-sql-injection-tricks-in.html" target="_blank">https://www.rafaybaloch.com/2017/06/error-based-sql-injection-tricks-in.html</a><br>
+<a href="https://websec.ca/kb/sql_injection" target="_blank">https://websec.ca/kb/sql_injection</a><br>
+
+Artículo acerca de ataques OOB<br>
+<a href="https://notsosecure.com/out-band-exploitation-oob-cheatsheet" target="_blank">https://notsosecure.com/out-band-exploitation-oob-cheatsheet</a><br>
+
+Bypass de Autenticación<br>
+<a href="https://pentestlab.blog/2012/12/24/sql-injection-authentication-bypass-cheat-sheet/" target="_blank">https://pentestlab.blog/2012/12/24/sql-injection-authentication-bypass-cheat-sheet/</a><br>
+
+Reportes de HackerOne<br>
+<a href="https://hackerone.com/reports/1046084" target="_blank">https://hackerone.com/reports/1046084</a><br>
+<a href="https://hackerone.com/reports/1069531" target="_blank">https://hackerone.com/reports/1069531</a><br>
+
+Error<br>
+<a href="https://infosecwriteups.com/exploiting-error-based-sql-injections-bypassing-restrictions-ed099623cd94" target="_blank">https://infosecwriteups.com/exploiting-error-based-sql-injections-bypassing-restrictions-ed099623cd94</a><br>
+
+Blind<br>
+<a href="https://portswigger.net/web-security/sql-injection/blind" target="_blank">https://portswigger.net/web-security/sql-injection/blind</a><br>
+<a href="https://owasp.org/www-community/attacks/Blind_SQL_Injection" target="_blank">https://owasp.org/www-community/attacks/Blind_SQL_Injection</a><br>
+<a href="https://www.youtube.com/watch?v=TjRK3aVEC60" target="_blank">https://www.youtube.com/watch?v=TjRK3aVEC60</a><br>
+
+PortSwigger. OOB SQLi<br>
+<a href="https://portswigger.net/web-security/sql-injection/blind/lab-out-of-band" target="_blank">https://portswigger.net/web-security/sql-injection/blind/lab-out-of-band</a><br>
+<a href="https://portswigger.net/web-security/sql-injection/cheat-sheet#dns-lookup" target="_blank">https://portswigger.net/web-security/sql-injection/cheat-sheet#dns-lookup</a><br>
+
+Netsparker. OOB Cheatsheet<br>
+<a href="https://www.netsparker.com/blog/web-security/sql-injection-cheat-sheet/#OutOfBandChannelAttacks" target="_blank">https://www.netsparker.com/blog/web-security/sql-injection-cheat-sheet/#OutOfBandChannelAttacks</a><br>
+
+PortSwigger. Cheatsheeet<br>
+<a href="https://portswigger.net/web-security/sql-injection/cheat-sheet" target="_blank">https://portswigger.net/web-security/sql-injection/cheat-sheet</a><br>
+
+OWASP. Cheatsheet de prevención<br>
+<a href="https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html" target="_blank">https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html</a><br>
+<a href="https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.md" target="_blank">https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.md</a><br> (El mismo pero en GitHub)
+
+Consultas Preparadas<br>
+<a href="https://stackoverflow.com/questions/60174/how-can-i-prevent-sql-injection-in-php" target="_blank">https://stackoverflow.com/questions/60174/how-can-i-prevent-sql-injection-in-php</a><br>
+<a href="https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php" target="_blank">https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php</a><br>
+<a href="https://bobby-tables.com/php" target="_blank">https://bobby-tables.com/php</a><br>
+<a href="https://www.w3schools.com/php/php_mysql_prepared_statements.asp" target="_blank">https://www.w3schools.com/php/php_mysql_prepared_statements.asp</a><br>
+
+Snyk. Cheatsheet de prevención<br>
+<a href="https://snyk.io/blog/sql-injection-cheat-sheet/" target="_blank">https://snyk.io/blog/sql-injection-cheat-sheet/</a><br>
+
+w3schools. mysqli_real_escape_string<br>
+<a href="https://www.w3schools.com/php/func_mysqli_real_escape_string.asp" target="_blank">https://www.w3schools.com/php/func_mysqli_real_escape_string.asp</a><br>
+
+Artículos increíbles (imo)<br>
+<a href="https://www.invicti.com/blog/web-security/sql-injection-cheat-sheet/" target="_blank">https://www.invicti.com/blog/web-security/sql-injection-cheat-sheet/</a><br>
+<a href="https://www.invicti.com/blog/web-security/sql-injection-vulnerability/" target="_blank">https://www.invicti.com/blog/web-security/sql-injection-vulnerability/</a><br>
+<a href="https://www.rafaybaloch.com/2017/06/error-based-sql-injection-tricks-in.html" target="_blank">https://www.rafaybaloch.com/2017/06/error-based-sql-injection-tricks-in.html</a><br>
+<a href="https://websec.ca/kb/sql_injection" target="_blank">https://websec.ca/kb/sql_injection</a><br>
+<a href="https://perspectiverisk.com/mysql-sql-injection-practical-cheat-sheet/" target="_blank">https://perspectiverisk.com/mysql-sql-injection-practical-cheat-sheet/</a><br>
+
+<br>
+
+<h4>Continuar Leyendo...</h4>
+
+OWASP. Procedimientos Almacenados<br>
+<a href="https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#stored-procedure-examples" target="_blank">https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html#stored-procedure-examples</a><br>
+
+Prevenir ataques de tipo inyección de código<br>
+<a href="https://stackoverflow.com/questions/129677/how-can-i-sanitize-user-input-with-php?rq=1" target="_blank">https://stackoverflow.com/questions/129677/how-can-i-sanitize-user-input-with-php?rq=1</a><br>
+
+CVEs<br>
+<a href="https://www.cvedetails.com/vulnerability-list/opsqli-1/sql-injection.html" target="_blank">https://www.cvedetails.com/vulnerability-list/opsqli-1/sql-injection.html</a><br>
+
+Combinar el escapar caracteres con Consultas Preparadas<br>
+<a href="https://stackoverflow.com/questions/6232084/is-mysql-real-escape-string-necessary-when-using-prepared-statements" target="_blank">https://stackoverflow.com/questions/6232084/is-mysql-real-escape-string-necessary-when-using-prepared-statements</a><br>
+
+Diferencias entre Consultas Preparadas y Procedimientos Almacenados<br>
+<a href="https://stackoverflow.com/questions/7296417/difference-between-stored-procedures-and-prepared-statements" target="_blank">https://stackoverflow.com/questions/7296417/difference-between-stored-procedures-and-prepared-statements</a><br>
+
+Escáneres<br>
+<a href="https://geekflare.com/find-sql-injection/" target="_blank">https://geekflare.com/find-sql-injection/</a><br>
+
+OOB SQLi Cheatsheet<br>
+<a href="https://github.com/Gabriel-Labs/OOB-SQLi" target="_blank">https://github.com/Gabriel-Labs/OOB-SQLi</a><br>
