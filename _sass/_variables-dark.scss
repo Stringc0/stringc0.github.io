@@ -320,6 +320,7 @@ $zindex-modal:             1040;
 //
 //## Define the breakpoints at which your layout will change, adapting to different screen sizes.
 
+//              INTERESANTE         //
 // Extra small screen / phone
 //** Deprecated `$screen-xs` as of v3.0.1
 $screen-xs:                  480px;
@@ -359,6 +360,8 @@ $screen-md-max:              ($screen-lg-min - 1);
 //
 //## Define your custom responsive grid.
 
+
+//                  INTERESANTE             //
 //** Number of columns in the grid.
 $grid-columns:              12;
 //** Padding between columns. Gets divided in half for the left and right.
@@ -384,6 +387,8 @@ $container-desktop:            (940px + $grid-gutter-width);
 //** For `$screen-md-min` and up.
 $container-md:                 $container-desktop;
 
+
+//          Interesante         //
 // Large screen / wide desktop
 $container-large-desktop:      (1140px + $grid-gutter-width);
 //** For `$screen-lg-min` and up.
