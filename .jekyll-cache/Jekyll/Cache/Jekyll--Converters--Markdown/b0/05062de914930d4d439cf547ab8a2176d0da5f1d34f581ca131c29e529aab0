@@ -1,0 +1,12 @@
+I"�<p>El Structured Query Language (SQL) es el lenguaje estándar de las bases de datos.<br />
+Estas bases de datos, o también conocidas como Database Management System (DBMS), proveen la disponibilidad de devolver, almacenar,
+modificar o destruir cualquier dato que se especifique. Esto se puede llevar a cabo desde la consola del DBMS, algo que sería 
+increíblemente tedioso, o desde las aplicaciones web, lo cual permite una rápida interacción entre los desarroladores y la base de datos.<br />
+Esto es ciertamente útil pero, ¿Qué pasaría si esta interacción se viera perturbada por un tercero?</p>
+
+<p>Las inyecciones SQL se dan a través de este Structured Query Language, afectan a las bases de datos y, por lo general, se ejecutan desde 
+las aplicaciones web.</p>
+
+<p>Pueden darse en cualquier Database Management System (DBMS) pero en este artículo se demostrarán ejemplos de inyecciones SQL en MySQL.</p>
+
+:ET
