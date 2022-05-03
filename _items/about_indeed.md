@@ -9,4 +9,4 @@ Me encanta esta área porque estás continuamente aprendiendo nuevas cosas, nuev
 cosas realmente geniales que al principio te vuelan la cabeza y parecen chino pero que, a través de la dedicación y sobretodo el cariño, 
 vas entendiendo cada vez mejor.
 
-Si tenés alguna sugerencia, opinión o algo que me quieras transmitir, comunicate conmigo a través de mi mail. Estaré más que encantado de leerte.
+Si tenés alguna sugerencia, opinión o algo que me quieras transmitir, comunicate conmigo a través de mi mail (que encontrarás más abajo). Estaré más que encantado de leerte.

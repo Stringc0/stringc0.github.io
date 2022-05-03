@@ -101,7 +101,7 @@ una consulta a la base de datos.
 
 Si un usuario puede manipular una consulta, obtiene la capacidad de visualizar, modificar o destruir cualquier valor. <br>
 Ejemplo: Extraer, editar o eliminar información de las bases de datos como usuarios, contraseñas, tarjetas de crédito y un largo, largo etcétera.<br>
-Incluso podría ejecutar comandos del sistema o visualizar archivos del mismo, si las condiciones les son favorables, lo cual llevaría a que un
+Incluso podría ejecutar comandos del sistema o visualizar archivos del mismo si las condiciones les son favorables. Esto llevaría a que un
 atacante pueda comprometer, no solo la base de datos, el sistema entero.
 
 ---
@@ -142,7 +142,7 @@ Consulta a la base de datos:
 ---
 
 <br>
-<h4>1. Analizar en dónde se están realizando las consultas a la base de datos </h4>
+<h4>1. Analizar en dónde se están realizando las consultas a la base de datos</h4>
 
 Se trata de ver en qué parte de la página web se podrían estar realizando.
 
@@ -538,7 +538,7 @@ Es la técnica que se estuvo mostrando a lo largo de toda esta publicación.
 <h4 id="Error">Inyección SQL Basada en Error (Error Based)</h4>
 Se da cuando en el output no se muestran más que ***errores***.
 
-En teoría, lo que hace esta técnica es, a partir de un error, mostrar información de la base de datos.
+Lo que hace esta técnica es, a partir de un error, mostrar información de la base de datos.
 
 En base a un error generado adrede, se lo concatena a x información de la base de datos.
 
@@ -625,7 +625,7 @@ En el contexto de una inyección, el payload sería el siguiente:
 Notas:
 * La primer base de datos suele ser 'information_schema' en sí, por lo que no tiene mucho sentido apuntar a ella con LIMIT.
 * Muchas veces es necesario hacer uso de caracteres en hexadecimal en el argumento _xml_path_, específicamente en la concatenación. Es decir, en vez de usar '`', se usa su forma hexadecimal; 0x60. Esto se hace cuando las comillas están sanitizadas.
-* ExtractValue() tiene un límite de 20 bytes que puede extraer, por lo que, si se quiere ver algo más grande que eso, se tiene que utilizar el método de la cláusula "SELECT".
+* ExtractValue() tiene un límite de 20 bytes que puede extraer. Si se quiere ver algo más grande que eso, se tiene que utilizar el método de la cláusula "SELECT".
 * Es recomendable utilizar el Intruder de la herramienta Burpsuite.
 
 <a href="https://www.rafaybaloch.com/2017/06/error-based-sql-injection-tricks-in.html" target="_blank">Este</a> y <a href="https://websec.ca/kb/sql_injection" target="_blank">este otro</a> artículo me ayudaron bastante a entender esta variación. Recomiendo su lectura ya que allí se muestran otras formas de ejecutar este tipo de ataque, incluyendo el método de la cláusula "SELECT".
@@ -1082,6 +1082,8 @@ Payload:
 
 ![extrayendo](/assets/img/screens/extrayendo_1.png)
 
+---
+
 <br>
 <h4 id="Basada en Error">Basada en Error (Error Based)</h4>
 <!--Mostrar procedimiento completo. Dumpear la base de datos actual.-->
@@ -1159,6 +1161,8 @@ Notas:
 * Revisar el apartado "length" para saber si un payload fue exitoso o no.<br>
 Mayor length = Exitoso<br>
 Menor length = No exitoso
+
+---
 
 <br>
 <h4 id="Basada en Booleanos">Basada en Booleanos (Boolean Based)</h4>
@@ -1318,6 +1322,8 @@ Payload:
 <pre><font class="ej">URL</font> + <font class="bordo">AND substring((SELECT concat(name,',',pass) FROM acuart.users LIMIT 0,1),x,1)='x';#</font></pre>
 
 ![extrayendo](/assets/img/screens/extrayendo_3.png)
+
+---
 
 <br>
 <h4 id="Basada en Tiempo">Basada en Tiempo (Time Based)</h4>
