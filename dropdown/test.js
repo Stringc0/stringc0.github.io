@@ -1,1 +1,1 @@
-prompt('')
+alert(document.domain);
